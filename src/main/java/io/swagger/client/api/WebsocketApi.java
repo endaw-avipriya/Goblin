@@ -110,8 +110,8 @@ public class WebsocketApi {
         List<Pair> localVarCollectionQueryParams = new ArrayList<Pair>();
 
         Map<String, String> localVarHeaderParams = new HashMap<String, String>();
-        if (apiVersion != null)
-        localVarHeaderParams.put("Api-Version", apiClient.parameterToString(apiVersion));
+        /*if (apiVersion != null)
+            localVarHeaderParams.put("Api-Version", apiClient.parameterToString(apiVersion));*/
 
         Map<String, Object> localVarFormParams = new HashMap<String, Object>();
 

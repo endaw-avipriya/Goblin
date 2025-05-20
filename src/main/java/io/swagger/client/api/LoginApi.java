@@ -351,7 +351,7 @@ public class LoginApi {
      * @return Call to execute
      * @throws ApiException If fail to serialize the request body object
      */
-    public okhttp3.Call logoutCall(String apiVersion, final ProgressResponseBody.ProgressListener progressListener, final ProgressRequestBody.ProgressRequestListener progressRequestListener) throws ApiException {
+    public okhttp3.Call logoutCall(String accessToken, final ProgressResponseBody.ProgressListener progressListener, final ProgressRequestBody.ProgressRequestListener progressRequestListener) throws ApiException {
         Object localVarPostBody = null;
         
         // create path and map variables
@@ -361,16 +361,17 @@ public class LoginApi {
         List<Pair> localVarCollectionQueryParams = new ArrayList<Pair>();
 
         Map<String, String> localVarHeaderParams = new HashMap<String, String>();
-        if (apiVersion != null)
-        localVarHeaderParams.put("Api-Version", apiClient.parameterToString(apiVersion));
 
         Map<String, Object> localVarFormParams = new HashMap<String, Object>();
 
         final String[] localVarAccepts = {
-            "*/*", "application/json"
+            "application/json"//,"*/*"
         };
         final String localVarAccept = apiClient.selectHeaderAccept(localVarAccepts);
-        if (localVarAccept != null) localVarHeaderParams.put("Accept", localVarAccept);
+        if (localVarAccept != null)
+            localVarHeaderParams.put("Accept", localVarAccept);
+        if (accessToken != null)
+            localVarHeaderParams.put("Authorization", "Bearer " + apiClient.parameterToString(accessToken));
 
         final String[] localVarContentTypes = {
             
@@ -395,13 +396,13 @@ public class LoginApi {
     }
     
     @SuppressWarnings("rawtypes")
-    private okhttp3.Call logoutValidateBeforeCall(String apiVersion, final ProgressResponseBody.ProgressListener progressListener, final ProgressRequestBody.ProgressRequestListener progressRequestListener) throws ApiException {
+    private okhttp3.Call logoutValidateBeforeCall(String accessToken, final ProgressResponseBody.ProgressListener progressListener, final ProgressRequestBody.ProgressRequestListener progressRequestListener) throws ApiException {
         // verify the required parameter 'apiVersion' is set
-        if (apiVersion == null) {
-            throw new ApiException("Missing the required parameter 'apiVersion' when calling logout(Async)");
+        if (accessToken == null) {
+            throw new ApiException("Missing the required parameter 'accessToken' when calling logout(Async)");
         }
         
-        okhttp3.Call call = logoutCall(apiVersion, progressListener, progressRequestListener);
+        okhttp3.Call call = logoutCall(accessToken, progressListener, progressRequestListener);
         return call;
 
         
@@ -417,8 +418,8 @@ public class LoginApi {
      * @return LogoutResponse
      * @throws ApiException If fail to call the API, e.g. server error or cannot deserialize the response body
      */
-    public LogoutResponse logout(String apiVersion) throws ApiException {
-        ApiResponse<LogoutResponse> resp = logoutWithHttpInfo(apiVersion);
+    public LogoutResponse logout(String accessToken) throws ApiException {
+        ApiResponse<LogoutResponse> resp = logoutWithHttpInfo(accessToken);
         return resp.getData();
     }
 
@@ -429,8 +430,8 @@ public class LoginApi {
      * @return ApiResponse&lt;LogoutResponse&gt;
      * @throws ApiException If fail to call the API, e.g. server error or cannot deserialize the response body
      */
-    public ApiResponse<LogoutResponse> logoutWithHttpInfo(String apiVersion) throws ApiException {
-        okhttp3.Call call = logoutValidateBeforeCall(apiVersion, null, null);
+    public ApiResponse<LogoutResponse> logoutWithHttpInfo(String accessToken) throws ApiException {
+        okhttp3.Call call = logoutValidateBeforeCall(accessToken, null, null);
         Type localVarReturnType = new TypeToken<LogoutResponse>(){}.getType();
         return apiClient.execute(call, localVarReturnType);
     }

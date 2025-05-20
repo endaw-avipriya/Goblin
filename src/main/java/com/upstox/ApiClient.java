@@ -55,6 +55,7 @@ public class ApiClient {
 
     private String basePath = "https://api.upstox.com";
     private String orderBasePath = "https://api-hft.upstox.com";
+    //private String wsbasePath = "wss://api.upstox.com/v3";
     private boolean sandbox = false;
     private boolean debugging = false;
     private Map<String, String> defaultHeaderMap = new HashMap<String, String>();
@@ -1051,7 +1052,10 @@ public class ApiClient {
         } else {
             if (reqBody != null) {
                 request = reqBuilder.post(reqBody).build();
-            }
+            } else if ("DELETE".equals(method)) {
+                request = reqBuilder.delete().build();
+            } else
+                request = reqBuilder.build();
             //method(method, reqBody)
         }
         return request;

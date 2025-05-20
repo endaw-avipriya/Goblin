@@ -1,11 +1,11 @@
 package in.market.goblin.service;
 
+import com.upstox.ApiException;
 import com.upstox.api.TokenResponse;
 import io.swagger.client.api.LoginApi;
-import jakarta.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Autowired;
-import java.io.FileWriter;
-import java.io.IOException;
+
+import java.io.*;
 import java.util.Properties;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -19,10 +19,10 @@ public class AccessTokenService {
     @Autowired
     private Properties credentials;
     private static String accessToken;
-    @PostConstruct
+    // Initialize API
+    LoginApi apiInstance = new LoginApi();
     public void fetchAndStoreAccessTokenForADay() {
-            // Initialize API
-            LoginApi apiInstance = new LoginApi();
+
             // Authenticate
             try {
                 String accessCode = SeleniumAuthService.getAuthorizationCode(credentials);
@@ -43,6 +43,20 @@ public class AccessTokenService {
         }
     }
     public String getAccessToken() {
-        return accessToken;
+        if(accessToken==null) {
+            try (BufferedReader reader = new BufferedReader(new FileReader(accessFile))) {
+                return reader.readLine().trim();
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+        }else
+            return accessToken;
+    }
+    public void logout() {
+        try {
+            apiInstance.logout(getAccessToken());
+        }catch (ApiException e) {
+            System.err.println("An error occurred during logout: " + e.getMessage());
+        }
     }
 }

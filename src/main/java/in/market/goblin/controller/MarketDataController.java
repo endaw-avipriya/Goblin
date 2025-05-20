@@ -10,11 +10,9 @@ import in.market.goblin.service.HistoricalDataService;
 
 //import org.springframework.web.bind.annotation.GetMapping;
 //import org.springframework.web.bind.annotation.RequestBody;
+import lombok.SneakyThrows;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 
 //import in.market.goblin.service.MarketDepthService;
@@ -29,7 +27,8 @@ public class MarketDataController {
 	private HistoricalDataService historicalService;
 	@Autowired
 	private AccessTokenService accessTokenService;
-
+	@Autowired
+	private MarketDepthService marketDepthService;
 		/*
 		 * @Autowired private MarketDepthService marketDepthService;
 		 */
@@ -38,11 +37,16 @@ public class MarketDataController {
 	  historicalService.fetchAndStoreHistoricalData(); 
 	  return "Historical data fetch initiated"; 
 	  }
-	 /*@GetMapping("/accessToken")
+	 @GetMapping("/login")
 	 public String fetchAccessToken() {
 		accessTokenService.fetchAndStoreAccessTokenForADay();
-		return "Access Token data fetch initiated";
-	 }*/
+		return "Access Token fetch initiated";
+	 }
+    @DeleteMapping("/logout")
+	public String logout() {
+		accessTokenService.logout();
+		return "Logout successful";
+	}
 		/*
 		 * @PostMapping("/market-depth") public String startMarketDepthStream() {
 		 * marketDepthService.startMarketDepthStream(); return

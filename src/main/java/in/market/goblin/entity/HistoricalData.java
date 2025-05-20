@@ -10,7 +10,7 @@ import jakarta.persistence.GeneratedValue;
 import lombok.Data;
 
 @Entity
-@Table(name = "historical_data")
+@Table(name = "TBT_historical_data")
 @Data
 public class HistoricalData {
     
@@ -25,12 +25,12 @@ public class HistoricalData {
     private double low;
     private double close;
     private long volume;
-    
+    private long oi;
     public HistoricalData() {
     }
 
     // Parameterized constructor to initialize all fields
-    public HistoricalData(String symbolToken, String tradingSymbol, LocalDateTime timestamp, double open, double high, double low,double close, long volume) {
+    public HistoricalData(String symbolToken, String tradingSymbol, LocalDateTime timestamp, double open, double high, double low,double close, long volume, long oi) {
         this.symbolToken = symbolToken;
         this.tradingSymbol = tradingSymbol;
         this.timestamp = timestamp;
@@ -39,6 +39,7 @@ public class HistoricalData {
         this.low = low;
         this.close = close;
         this.volume = volume;
+		this.oi = oi;
     }
     public long getId() {
 		return id;
@@ -110,6 +111,12 @@ public class HistoricalData {
 
 	public void setVolume(long volume) {
 		this.volume = volume;
+	}
+
+	public long getOi() {return oi;}
+
+	public void setOi(long oi) {
+		this.oi = volume;
 	}
 
 }

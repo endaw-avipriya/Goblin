@@ -31,14 +31,15 @@ import java.util.List;
 
 public class HistoricalCandleData {
   @SerializedName("candles")
-  private List<List<Object>> candles = null;
+  private Object[][] candles = null;
+  //private List<List<Object>> candles = null;
 
    /**
    * Get candles
    * @return candles
   **/
   @Schema(example = "[[<br>        \"2022-11-21T00:00:00+05:30\",<br>        37.4,<br>        37.8,<br>        36.95,<br>        37.6,<br>        5539471,<br>        0<br>      ]]", description = "")
-  public List<List<Object>> getCandles() {
+  public Object[][] getCandles() {
     return candles;
   }
 

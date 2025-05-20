@@ -66,35 +66,38 @@ public class HistoryApi {
      * @return Call to execute
      * @throws ApiException If fail to serialize the request body object
      */
-    public okhttp3.Call getHistoricalCandleDataCall(String instrumentKey, String interval, String toDate, String apiVersion, final ProgressResponseBody.ProgressListener progressListener, final ProgressRequestBody.ProgressRequestListener progressRequestListener) throws ApiException {
+    public okhttp3.Call getHistoricalCandleDataCall(String instrumentKey, String unit, String interval, String toDate, String fromDate, final ProgressResponseBody.ProgressListener progressListener, final ProgressRequestBody.ProgressRequestListener progressRequestListener) throws ApiException {
         Object localVarPostBody = null;
         
         // create path and map variables
-        String localVarPath = "/v2/historical-candle/{instrumentKey}/{interval}/{to_date}"
-            .replaceAll("\\{" + "instrumentKey" + "\\}", apiClient.escapeString(instrumentKey.toString()))
-            .replaceAll("\\{" + "interval" + "\\}", apiClient.escapeString(interval.toString()))
-            .replaceAll("\\{" + "to_date" + "\\}", apiClient.escapeString(toDate.toString()));
+        String localVarPath = "/v3/historical-candle/{instrumentKey}/{unit}/{interval}/{to_date}/{from_date}"
+            .replaceAll("\\{" + "instrumentKey" + "\\}", apiClient.escapeString(instrumentKey))
+            .replaceAll("\\{" + "unit" + "\\}", apiClient.escapeString(unit))
+            .replaceAll("\\{" + "interval" + "\\}", apiClient.escapeString(interval))
+            .replaceAll("\\{" + "to_date" + "\\}", apiClient.escapeString(toDate))
+            .replaceAll("\\{" + "from_date" + "\\}", apiClient.escapeString(fromDate));
 
         List<Pair> localVarQueryParams = new ArrayList<Pair>();
         List<Pair> localVarCollectionQueryParams = new ArrayList<Pair>();
 
         Map<String, String> localVarHeaderParams = new HashMap<String, String>();
-        if (apiVersion != null)
-            localVarHeaderParams.put("Api-Version", apiClient.parameterToString(apiVersion));
+        /*if (apiVersion != null)
+            localVarHeaderParams.put("Api-Version", apiClient.parameterToString(apiVersion));*/
 
         Map<String, Object> localVarFormParams = new HashMap<String, Object>();
 
         final String[] localVarAccepts = {
-            "application/json", "*/*"
+            "application/json"//, "*/*"
         };
         final String localVarAccept = apiClient.selectHeaderAccept(localVarAccepts);
-        if (localVarAccept != null) localVarHeaderParams.put("Accept", localVarAccept);
+        if (localVarAccept != null)
+            localVarHeaderParams.put("Accept", localVarAccept);
 
         final String[] localVarContentTypes = {
             
         };
-        final String localVarContentType = apiClient.selectHeaderContentType(localVarContentTypes);
-        localVarHeaderParams.put("Content-Type", localVarContentType);
+        /*final String localVarContentType = apiClient.selectHeaderContentType(localVarContentTypes);
+        localVarHeaderParams.put("Content-Type", localVarContentType);*/
 
         if(progressListener != null) {
             apiClient.getHttpClient().networkInterceptors().add(new okhttp3.Interceptor() {
@@ -113,10 +116,14 @@ public class HistoryApi {
     }
     
     @SuppressWarnings("rawtypes")
-    private okhttp3.Call getHistoricalCandleDataValidateBeforeCall(String instrumentKey, String interval, String toDate, String apiVersion, final ProgressResponseBody.ProgressListener progressListener, final ProgressRequestBody.ProgressRequestListener progressRequestListener) throws ApiException {
+    private okhttp3.Call getHistoricalCandleDataValidateBeforeCall(String instrumentKey, String unit, String interval, String toDate, String fromDate, final ProgressResponseBody.ProgressListener progressListener, final ProgressRequestBody.ProgressRequestListener progressRequestListener) throws ApiException {
         // verify the required parameter 'instrumentKey' is set
         if (instrumentKey == null) {
             throw new ApiException("Missing the required parameter 'instrumentKey' when calling getHistoricalCandleData(Async)");
+        }
+        // verify the required parameter 'unit' is set
+        if (unit == null) {
+            throw new ApiException("Missing the required parameter 'unit' when calling getHistoricalCandleData(Async)");
         }
         // verify the required parameter 'interval' is set
         if (interval == null) {
@@ -126,12 +133,11 @@ public class HistoryApi {
         if (toDate == null) {
             throw new ApiException("Missing the required parameter 'toDate' when calling getHistoricalCandleData(Async)");
         }
-        // verify the required parameter 'apiVersion' is set
-        if (apiVersion == null) {
-            throw new ApiException("Missing the required parameter 'apiVersion' when calling getHistoricalCandleData(Async)");
+        // verify the required parameter 'fromDate' is set
+        if (fromDate == null) {
+            throw new ApiException("Missing the required parameter 'toDate' when calling getHistoricalCandleData(Async)");
         }
-        
-        okhttp3.Call call = getHistoricalCandleDataCall(instrumentKey, interval, toDate, apiVersion, progressListener, progressRequestListener);
+        okhttp3.Call call = getHistoricalCandleDataCall(instrumentKey, unit, interval, toDate, fromDate, progressListener, progressRequestListener);
         return call;
 
         
@@ -150,8 +156,8 @@ public class HistoryApi {
      * @return GetHistoricalCandleResponse
      * @throws ApiException If fail to call the API, e.g. server error or cannot deserialize the response body
      */
-    public GetHistoricalCandleResponse getHistoricalCandleData(String instrumentKey, String interval, String toDate, String apiVersion) throws ApiException {
-        ApiResponse<GetHistoricalCandleResponse> resp = getHistoricalCandleDataWithHttpInfo(instrumentKey, interval, toDate, apiVersion);
+    public GetHistoricalCandleResponse getHistoricalCandleData(String instrumentKey, String unit, String interval, String toDate, String fromDate) throws ApiException {
+        ApiResponse<GetHistoricalCandleResponse> resp = getHistoricalCandleDataWithHttpInfo(instrumentKey, unit, interval, toDate, fromDate);
         return resp.getData();
     }
 
@@ -165,8 +171,8 @@ public class HistoryApi {
      * @return ApiResponse&lt;GetHistoricalCandleResponse&gt;
      * @throws ApiException If fail to call the API, e.g. server error or cannot deserialize the response body
      */
-    public ApiResponse<GetHistoricalCandleResponse> getHistoricalCandleDataWithHttpInfo(String instrumentKey, String interval, String toDate, String apiVersion) throws ApiException {
-        okhttp3.Call call = getHistoricalCandleDataValidateBeforeCall(instrumentKey, interval, toDate, apiVersion, null, null);
+    public ApiResponse<GetHistoricalCandleResponse> getHistoricalCandleDataWithHttpInfo(String instrumentKey, String unit, String interval, String toDate, String fromDate) throws ApiException {
+        okhttp3.Call call = getHistoricalCandleDataValidateBeforeCall(instrumentKey, unit, interval, toDate, fromDate, null, null);
         Type localVarReturnType = new TypeToken<GetHistoricalCandleResponse>(){}.getType();
         return apiClient.execute(call, localVarReturnType);
     }
@@ -182,7 +188,7 @@ public class HistoryApi {
      * @return The request call
      * @throws ApiException If fail to process the API call, e.g. serializing the request body object
      */
-    public okhttp3.Call getHistoricalCandleDataAsync(String instrumentKey, String interval, String toDate, String apiVersion, final ApiCallback<GetHistoricalCandleResponse> callback) throws ApiException {
+    public okhttp3.Call getHistoricalCandleDataAsync(String instrumentKey,String unit, String interval, String toDate, String fromDate, final ApiCallback<GetHistoricalCandleResponse> callback) throws ApiException {
 
         ProgressResponseBody.ProgressListener progressListener = null;
         ProgressRequestBody.ProgressRequestListener progressRequestListener = null;
@@ -203,7 +209,7 @@ public class HistoryApi {
             };
         }
 
-        okhttp3.Call call = getHistoricalCandleDataValidateBeforeCall(instrumentKey, interval, toDate, apiVersion, progressListener, progressRequestListener);
+        okhttp3.Call call = getHistoricalCandleDataValidateBeforeCall(instrumentKey, unit, interval, toDate, fromDate, progressListener, progressRequestListener);
         Type localVarReturnType = new TypeToken<GetHistoricalCandleResponse>(){}.getType();
         apiClient.executeAsync(call, localVarReturnType, callback);
         return call;
