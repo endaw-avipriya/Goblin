@@ -39,6 +39,7 @@ public class MarketDataStreamerV3 extends Streamer {
         subscriptions.put(Mode.LTPC, new HashSet<>());
         subscriptions.put(Mode.FULL, new HashSet<>());
         subscriptions.put(Mode.OPTION_GREEKS, new HashSet<>());
+        subscriptions.put(Mode.FULL_D30, new HashSet<>());
     }
 
     public MarketDataStreamerV3(ApiClient apiClient, Set<String> instrumentKeys, Mode mode) {
@@ -52,6 +53,7 @@ public class MarketDataStreamerV3 extends Streamer {
         subscriptions.put(Mode.LTPC, new HashSet<>());
         subscriptions.put(Mode.FULL, new HashSet<>());
         subscriptions.put(Mode.OPTION_GREEKS, new HashSet<>());
+        subscriptions.put(Mode.FULL_D30, new HashSet<>());
 
         // Populate initial subscriptions if provided
         this.subscriptions.get(mode)

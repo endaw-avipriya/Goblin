@@ -1,5 +1,6 @@
 package in.market.goblin.service;
 
+import com.upstox.ApiClient;
 import com.upstox.ApiResponse;
 import com.upstox.api.GetHistoricalCandleResponse;
 
@@ -38,7 +39,9 @@ public class HistoricalDataService {
         try {
             // Initialize API
 			HistoryApi apiInstance = new HistoryApi();
-			GetHistoricalCandleResponse response = apiInstance.getHistoricalCandleData("NSE_EQ|INE090A01021","minutes","1","2025-05-09","2025-05-05");
+			//String accessToken = AccessTokenService.getAccessToken();
+			//ApiClient.setAccessToken(accessToken);
+			GetHistoricalCandleResponse response = apiInstance.getHistoricalCandleData("NSE_EQ|INE090A01021","minutes","1","2025-05-09","2025-05-22");
 			HistoricalCandleData rawdata = response.getData();
 			Object[][] candles =rawdata.getCandles();
 			List<HistoricalData> batch = new ArrayList<>();

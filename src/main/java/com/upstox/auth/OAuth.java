@@ -19,14 +19,14 @@ import java.util.List;
 
 @jakarta.annotation.Generated(value = "io.swagger.codegen.v3.generators.java.JavaClientCodegen", date = "2023-07-12T20:29:09.823661+05:30[Asia/Kolkata]")
 public class OAuth implements Authentication {
-  private String accessToken;
+  private static String accessToken;
 
   public String getAccessToken() {
     return accessToken;
   }
 
-  public void setAccessToken(String accessToken) {
-    this.accessToken = accessToken;
+  public static void setAccessToken(String accesstoken) {
+    accessToken = accesstoken;
   }
 
   @Override

@@ -112,6 +112,8 @@ public class WebsocketApi {
         Map<String, String> localVarHeaderParams = new HashMap<String, String>();
         /*if (apiVersion != null)
             localVarHeaderParams.put("Api-Version", apiClient.parameterToString(apiVersion));*/
+        /*if (accessToken != null)
+            localVarHeaderParams.put("Authorization", "Bearer " + apiClient.parameterToString(accessToken));*/
 
         Map<String, Object> localVarFormParams = new HashMap<String, Object>();
 
@@ -237,13 +239,15 @@ public class WebsocketApi {
         List<Pair> localVarCollectionQueryParams = new ArrayList<Pair>();
 
         Map<String, String> localVarHeaderParams = new HashMap<String, String>();
-        if (apiVersion != null)
-        localVarHeaderParams.put("Api-Version", apiClient.parameterToString(apiVersion));
+        /*if (apiVersion != null)
+        localVarHeaderParams.put("Api-Version", apiClient.parameterToString(apiVersion));*/
+        /*if (accessToken != null)
+            localVarHeaderParams.put("Authorization", "Bearer " + apiClient.parameterToString(accessToken));*/
 
         Map<String, Object> localVarFormParams = new HashMap<String, Object>();
 
         final String[] localVarAccepts = {
-            "*/*", "application/json"
+            "application/json"//,"*/*"
         };
         final String localVarAccept = apiClient.selectHeaderAccept(localVarAccepts);
         if (localVarAccept != null) localVarHeaderParams.put("Accept", localVarAccept);

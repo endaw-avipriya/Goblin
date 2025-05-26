@@ -10,6 +10,7 @@ import in.market.goblin.service.HistoricalDataService;
 
 //import org.springframework.web.bind.annotation.GetMapping;
 //import org.springframework.web.bind.annotation.RequestBody;
+import in.market.goblin.service.MarketDepthService;
 import lombok.SneakyThrows;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -29,32 +30,33 @@ public class MarketDataController {
 	private AccessTokenService accessTokenService;
 	@Autowired
 	private MarketDepthService marketDepthService;
-		/*
-		 * @Autowired private MarketDepthService marketDepthService;
-		 */
-	  @PostMapping("/historical") 
-	  public String fetchHistoricalData() {
-	  historicalService.fetchAndStoreHistoricalData(); 
-	  return "Historical data fetch initiated"; 
-	  }
-	 @GetMapping("/login")
-	 public String fetchAccessToken() {
+
+	@GetMapping("/login")
+	public String fetchAccessToken() {
 		accessTokenService.fetchAndStoreAccessTokenForADay();
 		return "Access Token fetch initiated";
-	 }
+	}
     @DeleteMapping("/logout")
 	public String logout() {
 		accessTokenService.logout();
 		return "Logout successful";
 	}
-		/*
-		 * @PostMapping("/market-depth") public String startMarketDepthStream() {
-		 * marketDepthService.startMarketDepthStream(); return
-		 * "Market depth stream initiated"; }
-		 * 
-		 * @PostMapping("/disconnect") public String disconnectWebSocket() { return
-		 * marketDepthService.disconnectWebSocket(); }
-		 */
+	@PostMapping("/historical")
+	public String fetchHistoricalData() {
+		historicalService.fetchAndStoreHistoricalData();
+		return "Historical data fetch initiated";
+	}
+
+	@PostMapping("/market-feed") public String startMarketDepthStream() {
+		marketDepthService.startMarketDepthStream();
+		return "Market depth stream initiated";
+	}
+
+	@PostMapping("/disconnect") public String disconnectWebSocket() {
+		marketDepthService.disconnectMarketDepthStream();
+		return "Market depth stream disconnected";
+	}
+
 		/*
 		 * @Autowired private final HistoricalDataRepository instrumentRepository=null;
 		 * 

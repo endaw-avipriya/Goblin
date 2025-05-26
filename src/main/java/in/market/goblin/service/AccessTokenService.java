@@ -1,5 +1,6 @@
 package in.market.goblin.service;
 
+import com.upstox.ApiClient;
 import com.upstox.ApiException;
 import com.upstox.api.TokenResponse;
 import io.swagger.client.api.LoginApi;
@@ -21,6 +22,7 @@ public class AccessTokenService {
     private static String accessToken;
     // Initialize API
     LoginApi apiInstance = new LoginApi();
+
     public void fetchAndStoreAccessTokenForADay() {
 
             // Authenticate
@@ -28,7 +30,11 @@ public class AccessTokenService {
                 String accessCode = SeleniumAuthService.getAuthorizationCode(credentials);
                 TokenResponse token = apiInstance.token("2.0", accessCode, credentials.getProperty("api.key"), credentials.getProperty("api.secret"), credentials.getProperty("redirectUrl"),"authorization_code");
                 accessToken = token.getAccessToken();
+                System.out.println(accessToken);
+                ApiClient.setAccessToken(accessToken);
                 writeAccessToken(accessToken);
+
+                System.out.println("Login successful!!!");
             } catch (Exception e) {
                 System.err.println("Exception when calling LoginApi#authorize");
                 e.printStackTrace();
@@ -54,7 +60,8 @@ public class AccessTokenService {
     }
     public void logout() {
         try {
-            apiInstance.logout(getAccessToken());
+            apiInstance.logout("2.0");
+            System.out.println("Logout successfully");
         }catch (ApiException e) {
             System.err.println("An error occurred during logout: " + e.getMessage());
         }
