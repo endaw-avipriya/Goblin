@@ -24,11 +24,22 @@ public class AccessTokenService {
     LoginApi apiInstance = new LoginApi();
 
     public void fetchAndStoreAccessTokenForADay() {
+        File file = new File(accessFile);
+        boolean ismodifiedWithin6Hours=false;
+        if (file.exists()) {
+            long lastModifiedMillis = file.lastModified();
+            long currentMillis = System.currentTimeMillis();
+            long sixHoursMillis = 6 * 60 * 60 * 1000;
 
+            ismodifiedWithin6Hours = (currentMillis - lastModifiedMillis) <= sixHoursMillis;
+        } else {
+            System.out.println("File does not exist: " + accessFile);
+        }
+        if(!ismodifiedWithin6Hours) {
             // Authenticate
             try {
                 String accessCode = SeleniumAuthService.getAuthorizationCode(credentials);
-                TokenResponse token = apiInstance.token("2.0", accessCode, credentials.getProperty("api.key"), credentials.getProperty("api.secret"), credentials.getProperty("redirectUrl"),"authorization_code");
+                TokenResponse token = apiInstance.token("2.0", accessCode, credentials.getProperty("api.key"), credentials.getProperty("api.secret"), credentials.getProperty("redirectUrl"), "authorization_code");
                 accessToken = token.getAccessToken();
                 System.out.println(accessToken);
                 ApiClient.setAccessToken(accessToken);
@@ -39,6 +50,11 @@ public class AccessTokenService {
                 System.err.println("Exception when calling LoginApi#authorize");
                 e.printStackTrace();
             }
+        }else{
+            accessToken = getAccessToken();;
+            ApiClient.setAccessToken(accessToken);
+        }
+
     }
     public void writeAccessToken(String accessToken) {
         try (FileWriter fileWriter = new FileWriter(accessFile)) {

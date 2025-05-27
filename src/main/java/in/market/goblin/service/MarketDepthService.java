@@ -12,23 +12,13 @@
    import in.market.goblin.entity.LiveData;
    import in.market.goblin.repository.MarketDepthDataRepository;
    import io.swagger.client.api.WebsocketApi;
-   import jakarta.transaction.Transactional;
-   import in.market.goblin.repository.LiveDataRepository;
-   //import jakarta.annotation.PostConstruct;
+
    import org.springframework.kafka.core.KafkaTemplate;
    import org.springframework.beans.factory.annotation.Autowired;
    import org.springframework.stereotype.Service;
    
    import java.time.LocalDateTime;
-   import java.util.ArrayList;
-   import java.util.Arrays; import java.util.Collections;
-   import java.util.HashSet;
-   import java.util.List;
-   import java.util.Properties;
-   import java.util.Set;
-   import java.util.concurrent.CompletableFuture;
-   import java.util.concurrent.ExecutorService;
-   import java.util.concurrent.Executors;
+   import java.util.*;
    import java.util.stream.Collectors;
 
    import static com.upstox.feeder.constants.Mode.FULL_D30;
@@ -36,40 +26,46 @@
    //@Slf4j
    @Service
    public class MarketDepthService {
-      //private KafkaTemplate<String, MarketUpdateV3> kafkaTemplate;
-      private LiveDataRepository liveDataRepository;
-      private MarketDepthDataRepository marketDepthDataRepository;
       @Autowired
       private Properties credentials;
       // Initialize SmartAPI
       private ApiClient apiClient = new ApiClient();
-      private Set<String> instrumentKeys = Set.of("NSE_EQ|INE002A01018");//, "NSE_EQ|INE090A01021", "NSE_EQ|INE040A01034");
-      private MarketDataStreamerV3 feed = new MarketDataStreamerV3(apiClient, instrumentKeys, Mode.FULL);
-
-      public MarketDepthService(LiveDataRepository liveDataRepository, MarketDepthDataRepository marketDepthDataRepository) {
-         this.liveDataRepository = liveDataRepository;
-         this.marketDepthDataRepository = marketDepthDataRepository;
+      private Set<String> instrumentKeys;
+      private MarketDataStreamerV3 feed;
+      private static Map<MarketDataStreamerV3, Set<String>> feeds;
+      public void startMarketDepthStream(Set<String> instruments) {
+         instrumentKeys = instruments; //Set.of("NSE_EQ|INE002A01018");//, "NSE_EQ|INE090A01021", "NSE_EQ|INE040A01034");
+         feed = new MarketDataStreamerV3(apiClient, instrumentKeys, Mode.FULL_D30);
+         feeds.put(feed,instrumentKeys);
+         startTBTStream();
       }
-      public void disconnectMarketDepthStream() {
-         try {
-            feed.disconnect();
-         }catch(Exception e){
-            throw new RuntimeException(e);
+      public void disconnectMarketDepthStream(Set<String> instruments) {
+         MarketDataStreamerV3 feedStream = null;
+         for (Map.Entry<MarketDataStreamerV3, Set<String>> entry : feeds.entrySet()) {
+            Set<String> streamerInstrument = entry.getValue();
+            Set<String> intersection = new HashSet<>(streamerInstrument);
+            intersection.retainAll(instruments);
+            if (!intersection.isEmpty()) {
+               feedStream = entry.getKey();
+            }
          }
+         try {
+            if(feedStream != null)
+               feedStream.disconnect();
+            else
+               System.out.println("Disconnect failed as instruments are not subscribed");
+         } catch (Exception e) {
+               throw new RuntimeException(e);
+         }
+
       }
-      public void startMarketDepthStream() {
+      public void startTBTStream() {
          try {
             OnMarketUpdateV3Listener onMarketUpdateListener = (marketUpdate) -> {
                System.out.println(marketUpdate.toString());
-               /*try { ObjectMapper mapper = new ObjectMapper();
-                  String json = mapper.writeValueAsString(marketUpdate);
-                  kafkaTemplate.send("snapquote", String.valueOf(marketUpdate.getCurrentTs()), marketUpdate);
-                  //log.debug("Published SnapQuote to Kafka for sequenceNumber: {}", marketUpdate.getCurrentTs());
-               } catch (Exception e) {
-                  System.err.println(e.getMessage());
-               }*/
             };
-            feed.setOnMarketUpdateListener(onMarketUpdateListener);
+            RedisSubscriber subscriber = new RedisSubscriber();
+            subscriber.setOnMarketUpdateListener(onMarketUpdateListener);
             feed.connect();
 
          } catch (Exception e) {

@@ -1,5 +1,7 @@
 package com.upstox.feeder;
 
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -14,19 +16,21 @@ import com.upstox.feeder.constants.Mode;
 import com.upstox.feeder.exception.StreamerException;
 import com.upstox.feeder.listener.*;
 import com.upstox.marketdatafeederv3udapi.rpc.proto.MarketDataFeedV3.FeedResponse;
+import in.market.goblin.service.RedisPublisher;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 
 public class MarketDataStreamerV3 extends Streamer {
-
-    private OnMarketUpdateV3Listener onMarketUpdateListener;
+    @Value("${TBTdata.file}")
+    private String TBTdata;
+    @Autowired
+    private RedisPublisher publisher;
 
     private static final String SOCKET_NOT_OPEN_ERROR = "WebSocket is not open.";
     private static final String INVALID_VALUES_ERROR = "Values provided are invalid.";
 
     private Map<Mode, Set<String>> subscriptions;
 
-    public void setOnMarketUpdateListener(OnMarketUpdateV3Listener onMarketUpdateListener) {
-        this.onMarketUpdateListener = onMarketUpdateListener;
-    }
 
     public MarketDataStreamerV3(ApiClient apiClient) {
 
@@ -210,19 +214,21 @@ public class MarketDataStreamerV3 extends Streamer {
     protected void handleMessage(ByteBuffer bytes) {
 
         try {
-            FeedResponse feedResponse = FeedResponse.parseFrom(bytes);
-            String jsonFormat = JsonFormat.printer()
-                    .print(feedResponse);
+            // Convert ByteBuffer to byte[] for file output
+            byte[] input_byte = new byte[bytes.remaining()];
+            bytes.get(input_byte);
 
-            Gson gson = new Gson();
-
-            MarketUpdateV3 marketUpdate = gson.fromJson(jsonFormat, MarketUpdateV3.class);
-
-            if (onMarketUpdateListener != null) {
-                onMarketUpdateListener.onUpdate(marketUpdate);
+            try (FileOutputStream fos = new FileOutputStream(TBTdata, true)) {
+                fos.write(input_byte);
+                fos.write('\n');
+                //System.out.println("ByteBuffer protobuf data saved successfully.");
+            } catch (IOException e) {
+                e.printStackTrace();
             }
+            publisher.publish(bytes);
 
-        } catch (InvalidProtocolBufferException e) {
+
+        } catch (Exception e) {
             handleError(e);
         }
     }
