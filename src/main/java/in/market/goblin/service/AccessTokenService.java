@@ -53,6 +53,7 @@ public class AccessTokenService {
         }else{
             accessToken = getAccessToken();;
             ApiClient.setAccessToken(accessToken);
+            System.out.println("Login successful!");
         }
 
     }

@@ -19,19 +19,22 @@ import com.upstox.marketdatafeederv3udapi.rpc.proto.MarketDataFeedV3.FeedRespons
 import in.market.goblin.service.RedisPublisher;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.ComponentScan;
+import org.springframework.stereotype.Component;
 
+@Component
 public class MarketDataStreamerV3 extends Streamer {
     @Value("${TBTdata.file}")
     private String TBTdata;
     @Autowired
-    private RedisPublisher publisher;
+    private static RedisPublisher publisher;
 
     private static final String SOCKET_NOT_OPEN_ERROR = "WebSocket is not open.";
     private static final String INVALID_VALUES_ERROR = "Values provided are invalid.";
 
     private Map<Mode, Set<String>> subscriptions;
 
-
+    public MarketDataStreamerV3(){};
     public MarketDataStreamerV3(ApiClient apiClient) {
 
         if (apiClient == null) {
@@ -226,8 +229,6 @@ public class MarketDataStreamerV3 extends Streamer {
                 e.printStackTrace();
             }
             publisher.publish(bytes);
-
-
         } catch (Exception e) {
             handleError(e);
         }

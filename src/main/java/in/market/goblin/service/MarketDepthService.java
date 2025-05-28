@@ -8,12 +8,12 @@
    import com.upstox.feeder.MarketUpdateV3;
    import com.upstox.feeder.constants.Mode;
    import com.upstox.feeder.listener.OnMarketUpdateV3Listener;
-   import in.market.goblin.entity.MarketDepthData;
-   import in.market.goblin.entity.LiveData;
-   import in.market.goblin.repository.MarketDepthDataRepository;
+   //import in.market.goblin.entity.MarketDepthData;
+   //import in.market.goblin.entity.LiveData;
+   //import in.market.goblin.repository.MarketDepthDataRepository;
    import io.swagger.client.api.WebsocketApi;
 
-   import org.springframework.kafka.core.KafkaTemplate;
+   //import org.springframework.kafka.core.KafkaTemplate;
    import org.springframework.beans.factory.annotation.Autowired;
    import org.springframework.stereotype.Service;
    
@@ -32,7 +32,7 @@
       private ApiClient apiClient = new ApiClient();
       private Set<String> instrumentKeys;
       private MarketDataStreamerV3 feed;
-      private static Map<MarketDataStreamerV3, Set<String>> feeds;
+      private static Map<MarketDataStreamerV3, Set<String>> feeds = new HashMap<>();;
       public void startMarketDepthStream(Set<String> instruments) {
          instrumentKeys = instruments; //Set.of("NSE_EQ|INE002A01018");//, "NSE_EQ|INE090A01021", "NSE_EQ|INE040A01034");
          feed = new MarketDataStreamerV3(apiClient, instrumentKeys, Mode.FULL_D30);

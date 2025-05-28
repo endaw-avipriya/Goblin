@@ -25,7 +25,6 @@ public class RedisSubscriber {
             String jsonFormat = JsonFormat.printer()
                     .print(feedResponse);
             Gson gson = new Gson();
-
             MarketUpdateV3 marketUpdate = gson.fromJson(jsonFormat, MarketUpdateV3.class);
 
             if (onMarketUpdateListener != null) {
