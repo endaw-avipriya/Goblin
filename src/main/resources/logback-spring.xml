@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+
+    <!-- Console appender: show only WARN and above -->
+    <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>%d{HH:mm:ss.SSS} %-5level %logger{36} - %msg%n</pattern>
+        </encoder>
+    </appender>
+
+    <!-- Async wrapper for better file logging performance -->
+    <appender name="ASYNC_FILE" class="ch.qos.logback.classic.AsyncAppender">
+        <appender-ref ref="FILE" />
+        <queueSize>10240</queueSize>
+        <discardingThreshold>0</discardingThreshold>
+        <includeCallerData>false</includeCallerData>
+    </appender>
+
+    <!-- Rolling file appender for persistent logs -->
+    <appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>C:/Users/avipr/Workspaces/Project_1/TBTGoblin/app/logs/app.log</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>C:/Users/avipr/Workspaces/Project_1/TBTGoblin/app/logs/app-%d{yyyy-MM-dd}.log</fileNamePattern>
+            <maxHistory>14</maxHistory>
+        </rollingPolicy>
+        <encoder>
+            <pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n</pattern>
+        </encoder>
+    </appender>
+    <logger name="in.market.goblin.service.RedisFileWriter" level="OFF" additivity="false">
+     <appender-ref ref="FILE"/>
+    </logger>
+
+ <!-- File logger: log INFO and above -->
+    <root level="INFO">
+        <appender-ref ref="ASYNC_FILE" />
+    </root>
+
+    <!-- Console logger: only WARN and above -->
+    <logger name="ROOT" level="WARN" additivity="false">
+        <appender-ref ref="CONSOLE" />
+    </logger>
+
+</configuration>

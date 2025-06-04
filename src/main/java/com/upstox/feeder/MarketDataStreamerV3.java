@@ -1,40 +1,36 @@
 package com.upstox.feeder;
 
+import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.ByteBuffer;
+import java.nio.channels.FileChannel;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-import com.google.gson.Gson;
-import com.google.protobuf.InvalidProtocolBufferException;
-import com.google.protobuf.util.JsonFormat;
 import com.upstox.ApiClient;
 import com.upstox.feeder.constants.Mode;
 import com.upstox.feeder.exception.StreamerException;
 import com.upstox.feeder.listener.*;
-import com.upstox.marketdatafeederv3udapi.rpc.proto.MarketDataFeedV3.FeedResponse;
-import in.market.goblin.service.RedisPublisher;
-import org.springframework.beans.factory.annotation.Autowired;
+//import com.upstox.marketdatafeederv3udapi.rpc.proto.MarketDataFeedV3.FeedResponse;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.ComponentScan;
 import org.springframework.stereotype.Component;
 
-@Component
 public class MarketDataStreamerV3 extends Streamer {
-    @Value("${TBTdata.file}")
-    private String TBTdata;
-    @Autowired
-    private static RedisPublisher publisher;
+    //private String TBTdata="C:\\Users\\avipr\\Workspaces\\Project_1\\tbt_data.pb";
+    //private static final ByteBuffer NEWLINE = ByteBuffer.wrap(new byte[] { 0x0A });
+    private OnMarketUpdateV3Listener onMarketUpdateListener;
 
+    public void setOnMarketUpdateListener(OnMarketUpdateV3Listener onMarketUpdateListener) {
+        this.onMarketUpdateListener = onMarketUpdateListener;
+    }
     private static final String SOCKET_NOT_OPEN_ERROR = "WebSocket is not open.";
     private static final String INVALID_VALUES_ERROR = "Values provided are invalid.";
 
     private Map<Mode, Set<String>> subscriptions;
 
-    public MarketDataStreamerV3(){};
     public MarketDataStreamerV3(ApiClient apiClient) {
 
         if (apiClient == null) {
@@ -215,20 +211,27 @@ public class MarketDataStreamerV3 extends Streamer {
     }
 
     protected void handleMessage(ByteBuffer bytes) {
-
+        long receivedTime = System.nanoTime();
         try {
             // Convert ByteBuffer to byte[] for file output
-            byte[] input_byte = new byte[bytes.remaining()];
+            /*byte[] input_byte = new byte[bytes.remaining()];
             bytes.get(input_byte);
-
-            try (FileOutputStream fos = new FileOutputStream(TBTdata, true)) {
+            File file = new File(TBTdata);
+            boolean append = file.exists();
+            try (FileOutputStream fos = new FileOutputStream(file, append); FileChannel channel = fos.getChannel()) {
+                // Write ByteBuffer directly
+                channel.write(bytes);
                 fos.write(input_byte);
-                fos.write('\n');
+                // Append newline delimiter
+                ByteBuffer newlineBuffer = NEWLINE.duplicate();
+                channel.write(newlineBuffer);
                 //System.out.println("ByteBuffer protobuf data saved successfully.");
             } catch (IOException e) {
                 e.printStackTrace();
-            }
-            publisher.publish(bytes);
+            }*/
+                if (onMarketUpdateListener != null) {
+                    onMarketUpdateListener.onUpdate(bytes, receivedTime);
+                }
         } catch (Exception e) {
             handleError(e);
         }

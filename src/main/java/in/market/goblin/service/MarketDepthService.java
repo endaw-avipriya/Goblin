@@ -28,6 +28,8 @@
    public class MarketDepthService {
       @Autowired
       private Properties credentials;
+      @Autowired
+      private RedisPublisher publisher;
       // Initialize SmartAPI
       private ApiClient apiClient = new ApiClient();
       private Set<String> instrumentKeys;
@@ -61,11 +63,10 @@
       }
       public void startTBTStream() {
          try {
-            OnMarketUpdateV3Listener onMarketUpdateListener = (marketUpdate) -> {
-               System.out.println(marketUpdate.toString());
+            OnMarketUpdateV3Listener onMarketUpdateListener = (bytes, receivedTime) -> {
+               publisher.publish(bytes, receivedTime);
             };
-            RedisSubscriber subscriber = new RedisSubscriber();
-            subscriber.setOnMarketUpdateListener(onMarketUpdateListener);
+            feed.setOnMarketUpdateListener(onMarketUpdateListener);
             feed.connect();
 
          } catch (Exception e) {

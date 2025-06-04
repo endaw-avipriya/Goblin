@@ -1,6 +1,7 @@
 package com.upstox.feeder.listener;
-import com.upstox.feeder.MarketUpdateV3;
+//import com.upstox.feeder.MarketUpdateV3;
+import java.nio.ByteBuffer;
 
 public interface OnMarketUpdateV3Listener {
-    void onUpdate(MarketUpdateV3 marketUpdate);
+    void onUpdate(ByteBuffer bytes, long receivedTime);//(MarketUpdateV3 marketUpdate);
 }
