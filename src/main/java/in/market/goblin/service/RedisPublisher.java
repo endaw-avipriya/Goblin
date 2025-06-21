@@ -17,9 +17,9 @@ public class RedisPublisher {
             byte[] data = new byte[buffer.remaining()];
             buffer.get(data);
             redisTemplate.convertAndSend("tbt-stream", data);
-            //System.out.println("Published TBT data: " + data.length + " bytes");
+            System.out.println("Published TBT data: " + data.length + " bytes");
             long afterPublish = System.nanoTime();
-            if(((afterPublish - receivedTime) / 1_000_000.0) > 1)
+            if(((afterPublish - receivedTime) / 1000000.0) > 1)
                 System.out.println("Time from websocket receive to Redis publish: " + ((afterPublish - receivedTime) / 1_000_000.0) + " ms");
 
         } catch (Exception e) {

@@ -30,8 +30,23 @@
     <logger name="in.market.goblin.service.RedisFileWriter" level="OFF" additivity="false">
      <appender-ref ref="FILE"/>
     </logger>
+    <!-- Rolling file appender for RedisSubscriber logs -->
+    <appender name="REDIS_SUBSCRIBER_FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>C:/Users/avipr/Workspaces/Project_1/TBTGoblin/app/logs/redis-subscriber.log</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>C:/Users/avipr/Workspaces/Project_1/TBTGoblin/app/logs/redis-subscriber-%d{yyyy-MM-dd}.log</fileNamePattern>
+            <maxHistory>14</maxHistory>
+        </rollingPolicy>
+        <encoder>
+            <pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n</pattern>
+        </encoder>
+    </appender>
 
- <!-- File logger: log INFO and above -->
+    <!-- Logger for RedisSubscriber class -->
+    <logger name="in.market.goblin.service.RedisSubscriber" level="DEBUG" additivity="false">
+        <appender-ref ref="REDIS_SUBSCRIBER_FILE" />
+    </logger>
+    <!-- File logger: log INFO and above -->
     <root level="INFO">
         <appender-ref ref="ASYNC_FILE" />
     </root>
