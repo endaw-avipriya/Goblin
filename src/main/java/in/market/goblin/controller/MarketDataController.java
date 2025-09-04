@@ -1,8 +1,6 @@
 package in.market.goblin.controller;
 
 import in.market.goblin.service.AccessTokenService;
-import in.market.goblin.service.HistoricalDataService;
-
 //import io.swagger.v3.oas.annotations.parameters.RequestBody;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -11,6 +9,7 @@ import lombok.SneakyThrows;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Map;
 import java.util.Set;
 
 
@@ -46,5 +45,11 @@ public class MarketDataController {
 	public String disconnectWebSocket(@RequestBody Set<String> instruments) {
 		marketDepthService.disconnectMarketDepthStream(instruments);
 		return "Market depth stream disconnected";
+	}
+
+	@PostMapping("/signals")
+	public String signals(@RequestBody Map<String, Object> payload) {
+		marketDepthService.signalWriter(payload);
+		return "Signal received";
 	}
 }
